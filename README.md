@@ -33,7 +33,7 @@ Database
 - [Flutter launcher icon](https://pub.dev/packages/flutter_launcher_icons) - This makes the icon and splash screen works more convenient. 
 
 
-### Building Roadmaps
+### Building Roadmap
 - [x] Creating User interface.
 - [x] Intreagrate Google Sheets as a database.
 - [x] Creating pdf based on the product selected.
@@ -45,6 +45,7 @@ Database
 ### Build Releases 
 - [ARM-64 V8A](https://drive.google.com/file/d/1etM_k72_tvMX-_o_CqI0g5WhlQbb-iR3/view?usp=share_link)
 - [APP-x-86](https://drive.google.com/file/d/1X1--nXNQIbzIDUs77lyGo3M1HXkeEFwg/view?usp=share_link)
+> You will also find the apk files in 'Release' section.
 
 ## Screenshots
 
