@@ -1,60 +1,19 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:number_to_character/number_to_character.dart';
 import 'package:intl/intl.dart';
-// import 'package:flutter/material.dart';
 
 class pdf {
   static Future<void> doIt(BuildContext ctx, String name, String add,
-      final itemlist, bool isP, int InvoiceNo) async {
-    final img = await networkImage(
-        'https://scontent.fdac27-2.fna.fbcdn.net/v/t1.15752-9/318631431_1197338447576173_6351736879351345471_n.jpg?stp=cp0_dst-jpg_e15_fr_q65&_nc_cat=103&ccb=1-7&_nc_sid=58c789&efg=eyJpIjoiYiJ9&_nc_eui2=AeEoQpyeFOtbxx7OLztdARjRX_CaRM_9okhf8JpEz_2iSGU7pxQXMGEnaKA-yWD3JyQ5MRB3mDBqVp71qvPaUFIh&_nc_ohc=RL7Z5HwKmXoAX-Gyvyi&_nc_ht=scontent.fdac27-2.fna&oh=03_AdQTQd4n3tqwWiko7evU1r57--I8iS7U7XvKkR9sDWugrA&oe=63DFF44E');
-
+      final itemlist, bool isP, String InvoiceNo, String signURL) async {
+    // final img =await AssetImage('asset/sign.jpg');
+    final img = await networkImage(signURL);
+    // final img = await networkImage(
+    //    'https://csepstuacbd-my.sharepoint.com/personal/tanvirrobin18_cse_pstu_ac_bd/_layouts/15/embed.aspx?UniqueId=fda051c6-af21-47b7-84eb-4462720228f9');
     var converter = NumberToCharacterConverter('en');
-    String x = converter.convertDouble(126.75);
-
-    print('printng x $x');
-    print('printng Lengt is ${itemlist.length}');
     final pdf = pw.Document();
-    //final font = await PdfGoogleFonts.nunitoExtraLight();
-    // final itemlist = [
-    //   {
-    //     'name': 'Apedom',
-    //     'type': 'Syrup',
-    //     'pack': '50Pcs',
-    //     'price': '220',
-    //     'quantity': '10',
-    //     'bonus': '0'
-    //   },
-    //   {
-    //     'name': 'Cipro',
-    //     'type': 'Capsul',
-    //     'pack': '50Pcs',
-    //     'price': '140',
-    //     'quantity': '10',
-    //     'bonus': '0'
-    //   },
-    //   {
-    //     'name': 'MultiVita',
-    //     'type': 'Syrup',
-    //     'pack': '12ml',
-    //     'price': '22',
-    //     'quantity': '10',
-    //     'bonus': '0'
-    //   },
-    //   {
-    //     'name': 'HK-20',
-    //     'type': 'Capsul',
-    //     'pack': '80Pcs',
-    //     'price': '69',
-    //     'quantity': '10',
-    //     'bonus': '0'
-    //   },
-    // ];
 
     double totalSum() {
       double x = 0;
@@ -67,21 +26,19 @@ class pdf {
 
     double Netpay() {
       double x = (totalSum() + (totalSum() * .15));
-      // return double.parse(x.toStringAsFixed(2));
       return x;
     }
 
     double findh() {
       double x = 490;
-      x += itemlist.length * 18;
-      print('returning $x');
-      return x + 200;
+      x += itemlist.length * 20;
+      return x + 15;
     }
 
     final ttf = await fontFromAssetBundle('fonts/Cambria.ttf');
     final ttfB = await fontFromAssetBundle('fonts/cambriab.ttf');
     pdf.addPage(pw.Page(
-        margin: pw.EdgeInsets.fromLTRB(20, 0, 20, 20),
+        margin: const pw.EdgeInsets.fromLTRB(20, 0, 20, 20),
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return pw.Container(
@@ -153,8 +110,6 @@ class pdf {
                             fontSize: 8.5,
                             fontWeight: pw.FontWeight.bold)),
                   ),
-                  // pw.Text('Invoice Details',
-                  //    )
                 ]),
                 pw.SizedBox(
                   height: 5,
@@ -170,9 +125,9 @@ class pdf {
                     child: pw.Column(children: [
                       pw.Table(
                           columnWidths: {
-                            0: pw.FixedColumnWidth(70),
-                            1: pw.FixedColumnWidth(100),
-                            2: pw.FixedColumnWidth(60),
+                            0: pw.FixedColumnWidth(60),
+                            1: pw.FixedColumnWidth(110),
+                            2: pw.FixedColumnWidth(50),
                           },
                           border: pw.TableBorder.all(
                             width: 0.4,
@@ -190,7 +145,7 @@ class pdf {
                               pw.Padding(
                                 padding: pw.EdgeInsets.all(3),
                                 child: pw.Text(
-                                  name,
+                                  '$name',
                                   style: pw.TextStyle(font: ttf, fontSize: 10),
                                 ),
                               ),
@@ -280,8 +235,8 @@ class pdf {
                             2: pw.FixedColumnWidth(33), //add
                             3: pw.FixedColumnWidth(25),
                             4: pw.FixedColumnWidth(25),
-                            5: pw.FixedColumnWidth(26),
-                            6: pw.FixedColumnWidth(20),
+                            5: pw.FixedColumnWidth(20),
+                            6: pw.FixedColumnWidth(26),
                             7: pw.FixedColumnWidth(32),
                           },
                           border: pw.TableBorder.all(
@@ -325,14 +280,6 @@ class pdf {
                               ),
                               pw.Padding(
                                   padding: pw.EdgeInsets.all(3),
-                                  child: pw.Text('Unit\nPrice',
-                                      style: pw.TextStyle(
-                                          font: ttfB,
-                                          fontSize: 11,
-                                          fontWeight: pw.FontWeight.bold),
-                                      textAlign: pw.TextAlign.center)),
-                              pw.Padding(
-                                  padding: pw.EdgeInsets.all(3),
                                   child: pw.Text('Quantity',
                                       style: pw.TextStyle(
                                           font: ttfB,
@@ -342,6 +289,14 @@ class pdf {
                               pw.Padding(
                                   padding: pw.EdgeInsets.all(3),
                                   child: pw.Text('Bonus',
+                                      style: pw.TextStyle(
+                                          font: ttfB,
+                                          fontSize: 11,
+                                          fontWeight: pw.FontWeight.bold),
+                                      textAlign: pw.TextAlign.center)),
+                              pw.Padding(
+                                  padding: pw.EdgeInsets.all(3),
+                                  child: pw.Text('Unit\nPrice',
                                       style: pw.TextStyle(
                                           font: ttfB,
                                           fontSize: 11,
@@ -366,8 +321,8 @@ class pdf {
                                   2: pw.FixedColumnWidth(33), //add
                                   3: pw.FixedColumnWidth(25),
                                   4: pw.FixedColumnWidth(25),
-                                  5: pw.FixedColumnWidth(26),
-                                  6: pw.FixedColumnWidth(20),
+                                  5: pw.FixedColumnWidth(20),
+                                  6: pw.FixedColumnWidth(26),
                                   7: pw.FixedColumnWidth(32),
                                 },
                                 border: pw.TableBorder.all(
@@ -402,13 +357,6 @@ class pdf {
                                     pw.Padding(
                                         padding: pw.EdgeInsets.all(3),
                                         child: pw.Text(
-                                            itemlist[index]['price'].toString(),
-                                            style: pw.TextStyle(
-                                                font: ttf, fontSize: 11),
-                                            textAlign: pw.TextAlign.center)),
-                                    pw.Padding(
-                                        padding: pw.EdgeInsets.all(3),
-                                        child: pw.Text(
                                             itemlist[index]['quantity']
                                                 .toString(),
                                             style: pw.TextStyle(
@@ -418,6 +366,15 @@ class pdf {
                                         padding: pw.EdgeInsets.all(3),
                                         child: pw.Text(
                                             itemlist[index]['bonus'].toString(),
+                                            style: pw.TextStyle(
+                                                font: ttf, fontSize: 11),
+                                            textAlign: pw.TextAlign.center)),
+                                    pw.Padding(
+                                        padding: pw.EdgeInsets.all(3),
+                                        child: pw.Text(
+                                            double.parse(
+                                                    itemlist[index]['price'])
+                                                .toStringAsFixed(2),
                                             style: pw.TextStyle(
                                                 font: ttf, fontSize: 11),
                                             textAlign: pw.TextAlign.center)),
@@ -442,8 +399,8 @@ class pdf {
                                   2: pw.FixedColumnWidth(33), //add
                                   3: pw.FixedColumnWidth(25),
                                   4: pw.FixedColumnWidth(25),
-                                  5: pw.FixedColumnWidth(26),
-                                  6: pw.FixedColumnWidth(20),
+                                  5: pw.FixedColumnWidth(20),
+                                  6: pw.FixedColumnWidth(26),
                                   7: pw.FixedColumnWidth(32),
                                 },
                                 border: pw.TableBorder.all(
@@ -672,21 +629,12 @@ class pdf {
                     ]))
               ])); // Center
         })); // Page// Page
-    pdf.save();
-    // Navigator.pop(ctx);
     if (isP) {
       await Printing.layoutPdf(
           onLayout: (PdfPageFormat format) async => pdf.save());
     } else {
       await Printing.sharePdf(
-          bytes: await pdf.save(), filename: '$InvoiceNo.pdf');
+          bytes: await pdf.save(), filename: 'H$InvoiceNo.pdf');
     }
-
-    //Navigator.pop(ctx);
-
-    // PdfPreview(
-    //   build: (format) => pdf.save(),
-    // );
   }
-  //  print('End pf it');
 }
