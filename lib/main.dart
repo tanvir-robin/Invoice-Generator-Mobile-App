@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import './pdf.dart';
 import './globals.dart';
+import './screens/drawer.dart';
+import './screens/snackbar.dart';
 
 void main() async {
-  runApp(FormWidget());
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MaterialApp(home: FormWidget()));
 }
 
 class FormWidget extends StatefulWidget {
@@ -17,13 +25,15 @@ class FormWidget extends StatefulWidget {
 class _FormWidgetState extends State<FormWidget> {
   String _customerName = 'Choose Customer Name-';
   String _productName = 'Choose Product';
-  late String signURL;
+  String signURL = '';
   var _quantity = '';
   var _invoiceNo = '';
   var _bonus = '0';
   var items = [];
   var Customers = [];
   List<Map<String, String>> invoiceP = [];
+  final db = FirebaseFirestore.instance;
+  final DateTime date = DateTime.now();
 
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _bonus_controller = TextEditingController();
@@ -47,9 +57,7 @@ class _FormWidgetState extends State<FormWidget> {
       var response = await http.get(url);
       data = json.decode(response.body);
     } catch (e) {
-      final SnackBar snackBar =
-          SnackBar(content: Text("No Internet Connection"));
-      snackbarKey.currentState?.showSnackBar(snackBar);
+      SnackbarGlobal.show('No Internet Connection');
     }
 
     (data["Products"] as List<dynamic>).forEach((element) {
@@ -85,36 +93,68 @@ class _FormWidgetState extends State<FormWidget> {
     _bonus_controller.text = '0';
   }
 
+  Future addDataToFireStore() async {
+    String encodedData = base64.encode(utf8
+        .encode('${_invoiceNo}|${_customerName}|${date.toIso8601String()}'));
+    final url = Uri.parse(
+        'https://invoice-maker-283c8-default-rtdb.asia-southeast1.firebasedatabase.app/past-order/${_invoiceNo}.json');
+    await http.put(url, body: json.encode({'path': encodedData}));
+    invoiceP.forEach(
+      (e) async {
+        await db.collection(encodedData).doc(e['name']).set({
+          'name': e['name'],
+          'type': e['type'],
+          'pack': e['pack'],
+          'price': e['price'],
+          'quantity': e['quantity'],
+          'bonus': e['bonus']
+        });
+      },
+    );
+    print('Executed');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: snackbarKey,
+      scaffoldMessengerKey: SnackbarGlobal.key,
       home: Scaffold(
+        drawer: AppDrawer(signURL),
         appBar: AppBar(
           title: const Text('Invoice Generator'),
           actions: [
             IconButton(
                 onPressed: () {
-                  pdf.doIt(
-                      context,
-                      _customerName.split('-')[0],
-                      _customerName.split('-')[1],
-                      invoiceP,
-                      false,
-                      _invoiceNo,
-                      signURL);
+                  if (_invoiceNo.isEmpty) {
+                    SnackbarGlobal.show('Invoice number can\'t be empty');
+                  } else {
+                    addDataToFireStore();
+                    pdf.doIt(
+                        context,
+                        _customerName.split('-')[0],
+                        _customerName.split('-')[1],
+                        invoiceP,
+                        false,
+                        _invoiceNo,
+                        signURL);
+                  }
                 },
                 icon: const Icon(Icons.share)),
             IconButton(
                 onPressed: () {
-                  pdf.doIt(
-                      context,
-                      _customerName.split('-')[0],
-                      _customerName.split('-')[1],
-                      invoiceP,
-                      true,
-                      _invoiceNo,
-                      signURL);
+                  if (_invoiceNo.isEmpty) {
+                    SnackbarGlobal.show('Invoice number can\'t be empty');
+                  } else {
+                    addDataToFireStore();
+                    pdf.doIt(
+                        context,
+                        _customerName.split('-')[0],
+                        _customerName.split('-')[1],
+                        invoiceP,
+                        true,
+                        _invoiceNo,
+                        signURL);
+                  }
                 },
                 icon: const Icon(Icons.picture_as_pdf)),
           ],
@@ -255,13 +295,7 @@ class _FormWidgetState extends State<FormWidget> {
 
                                     invoiceP.add(tempData);
                                   });
-                                  final SnackBar snackBar = SnackBar(
-                                      behavior: SnackBarBehavior.floating,
-                                      duration: Duration(milliseconds: 300),
-                                      content: Text("Item added"));
-
-                                  snackbarKey.currentState
-                                      ?.showSnackBar(snackBar);
+                                  SnackbarGlobal.show('Item added');
                                 }
                               },
                               child: const Text('Submit'),
@@ -295,18 +329,10 @@ class _FormWidgetState extends State<FormWidget> {
                                                     (element) =>
                                                         element['name'] ==
                                                         name);
-                                                final SnackBar
-                                                    snackBar2 = SnackBar(
-                                                        behavior:
-                                                            SnackBarBehavior
-                                                                .floating,
-                                                        duration: Duration(
-                                                            milliseconds: 300),
-                                                        content: Text(
-                                                            "Item Deleted"));
+
                                                 setState(() {
-                                                  snackbarKey.currentState
-                                                      ?.showSnackBar(snackBar2);
+                                                  SnackbarGlobal.show(
+                                                      'Item Deleted');
                                                 });
                                               },
                                               icon: const Icon(Icons.delete)),
@@ -324,6 +350,8 @@ class _FormWidgetState extends State<FormWidget> {
                 ),
         ),
       ),
+      initialRoute: '/',
+      // routes: {PastOrders.routeName: (context) => new PastOrders()},
     );
   }
 }

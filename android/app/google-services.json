@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "68755469688",
+    "firebase_url": "https://invoice-maker-283c8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "invoice-maker-283c8",
+    "storage_bucket": "invoice-maker-283c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68755469688:android:8f509bbbdc3fd61a91448d",
+        "android_client_info": {
+          "package_name": "com.myproject.invoicegenertor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68755469688-jl1v7p42mo4ed6utbjds4s75jl92j7bl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myproject.invoicegenertor",
+            "certificate_hash": "98a78ae548102179fafc8343f26c45c97e484cb8"
+          }
+        },
+        {
+          "client_id": "68755469688-tn6rfpkfr8ltspg59hljc6ptv4bimnk4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myproject.invoicegenertor",
+            "certificate_hash": "1c0adfdcc613033e1d1ddf3b884ec865468680b4"
+          }
+        },
+        {
+          "client_id": "68755469688-jjqo0ahmvt6rju58u6djo93qsaljcm2m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADxOCvi-ywvjtVJudF226epfofGRIRk7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68755469688-jjqo0ahmvt6rju58u6djo93qsaljcm2m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
