@@ -48,7 +48,9 @@ Backend  : Google Firebase
 
 ## Screenshots
 
-![Apple iPhone 11 Pro Max Presentation (5)](https://user-images.githubusercontent.com/95021955/236446592-ea3c9b6a-5524-4c36-a23a-bcfad57dd8ed.png)
+
+![finl](https://user-images.githubusercontent.com/95021955/236450421-8e50ed2f-5df0-4cbe-abf0-13982ad3b1ff.jpg)
+
 
 ## Contact the developer
 > Feel free to get in touch with the developer for any kind of queries or help. <br>
