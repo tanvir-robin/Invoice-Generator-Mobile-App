@@ -53,7 +53,7 @@ class _FormWidgetState extends State<FormWidget> {
   Future<bool> trigger() async {
     try {
       var url = Uri.parse(
-          'https://invoice-maker-283c8-default-rtdb.asia-southeast1.firebasedatabase.app/.json');
+          'Your Firebase ID');
       var response = await http.get(url);
       data = json.decode(response.body);
     } catch (e) {
