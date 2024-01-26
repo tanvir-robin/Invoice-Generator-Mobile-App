@@ -53,6 +53,6 @@ Backend  : Google Firebase
 
 
 ## Contact the developer
-> Feel free to get in touch with the developer for any kind of queries or help. <br>
+> Feel free to get in touch with the developer for any kind of queries or help. (Please write with your direct purpose instead of sending just Hi or Hello first) <br>
 > Email: tanvir.rrrabin@gmai.com <br>
 > Telegram: @RooBiiinnn
